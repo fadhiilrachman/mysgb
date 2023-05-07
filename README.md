@@ -1,6 +1,11 @@
 # MySGB
 The place for sharing needs.
 
+## Requirements
+
+- PHP 8.1.9
+- Postgresql 15.2
+
 ## Installation
 1. Clone this project
     ```bash
