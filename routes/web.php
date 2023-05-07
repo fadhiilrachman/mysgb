@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
     Route::post('/sharing/create-new', [SharingController::class, 'store'])->name('sharing.store');
 
     Route::get('/sharing/{id}', [SharingController::class, 'detail'])->name('sharing.detail');
+    Route::post('/sharing/{id}', [SharingController::class, 'detail'])->name('sharing.detail');
 
     Route::get('/history', [HistoryController::class, 'view'])->name('history.view');
     Route::get('/history/list.json', [HistoryController::class, 'listAjax'])->name('history.list-ajax');

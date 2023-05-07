@@ -5,7 +5,7 @@ namespace App\Events\Sharing;
 use App\Events\Event;
 use App\Interfaces\LogActivityEventInterface;
 
-class ViewSharingContentFailedEvent extends Event implements LogActivityEventInterface
+class CreateSharingContentFailedEvent extends Event implements LogActivityEventInterface
 {
     /** @var array */
     private $data;
@@ -29,7 +29,7 @@ class ViewSharingContentFailedEvent extends Event implements LogActivityEventInt
 
     public function getType(): string
     {
-        return 'ViewSharingContentFailed';
+        return 'CreateSharingContentFailed';
     }
 
     public function getIP(): string

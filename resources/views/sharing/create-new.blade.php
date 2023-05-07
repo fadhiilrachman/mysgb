@@ -24,11 +24,6 @@
                 <h4 class="card-title">Create New</h4>
             </div>
             <div class="card-body">
-                @if(session()->get('success'))
-                    <div class="alert alert-success">
-                        {{ session()->get('success') }}
-                    </div>
-                @endif
                 @if(session()->get('errors'))
                     <div class="alert alert-danger">
                         {{ session()->get('errors')->first() }}

@@ -41,7 +41,7 @@
                         </div>
                         <div class=" col-md-6 col-sm-12 col-xs-12">
                             <div class="form-group position-relative has-icon-right">
-                                <input type="text" id="q" name="q" class="form-control" placeholder="Search title and author name..">
+                                <input type="text" id="q" name="q" class="form-control" placeholder="Search title..">
                                 <div class="form-control-icon">
                                     <i class="fa fa-times btn-clear-search"></i>
                                 </div>

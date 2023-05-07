@@ -5,13 +5,10 @@ namespace App\Events\Sharing;
 use App\Events\Event;
 use App\Interfaces\LogActivityEventInterface;
 
-class ViewSharingContentFailedEvent extends Event implements LogActivityEventInterface
+class CreateSharingContentSucceededEvent extends Event implements LogActivityEventInterface
 {
     /** @var array */
     private $data;
-
-    /** @var string */
-    private $message;
 
     /** @var int */
     private $statusCode;
@@ -19,17 +16,16 @@ class ViewSharingContentFailedEvent extends Event implements LogActivityEventInt
     /** @var string */
     private $ip;
 
-    public function __construct(array $data, string $message, int $statusCode = 500, string $ip = '127.0.0.1')
+    public function __construct(array $data, int $statusCode = 200, string $ip = '127.0.0.1')
     {
         $this->data = $data;
-        $this->message = $message;
         $this->statusCode = $statusCode;
         $this->ip = $ip;
     }
 
     public function getType(): string
     {
-        return 'ViewSharingContentFailed';
+        return 'CreateSharingContentSucceeded';
     }
 
     public function getIP(): string
@@ -46,7 +42,7 @@ class ViewSharingContentFailedEvent extends Event implements LogActivityEventInt
     {
         return [
             'data' => $this->data,
-            'message' => $this->message,
+            'message' => 'ok',
             'status_code' => (int)$this->getStatus()
         ];
     }

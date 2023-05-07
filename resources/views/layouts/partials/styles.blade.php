@@ -15,6 +15,7 @@
 
 @if(Route::is('sharing.my-list') )
     <link rel="stylesheet" href="{{ asset('/vendors/DataTables/datatables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/vendors/daterangepicker/daterangepicker.min.css') }}" />
 @endif
 
 @if(Route::is('history.view') )

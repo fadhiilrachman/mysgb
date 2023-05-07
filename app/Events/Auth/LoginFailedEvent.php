@@ -16,16 +16,25 @@ class LoginFailedEvent extends Event implements LogActivityEventInterface
     /** @var int */
     private $statusCode;
 
-    public function __construct(array $data, string $message, int $statusCode = 500)
+    /** @var string */
+    private $ip;
+
+    public function __construct(array $data, string $message, int $statusCode = 500, string $ip = '127.0.0.1')
     {
         $this->data = $data;
         $this->message = $message;
         $this->statusCode = $statusCode;
+        $this->ip = $ip;
     }
 
     public function getType(): string
     {
         return 'LoginFailed';
+    }
+
+    public function getIP(): string
+    {
+        return $this->ip;
     }
 
     public function getStatus(): int

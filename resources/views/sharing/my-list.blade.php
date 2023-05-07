@@ -26,6 +26,33 @@
                 <h4 class="card-title">My List</h4>
             </div>
             <div class="card-body">
+                <form class="list form" action="{{ route('sharing.my-list') }}" method="get">
+                    <input type="hidden" name="start_date">
+                    <input type="hidden" name="end_date">
+                    <div class="row">
+                        <div class=" col-md-4 col-sm-12 col-xs-12">
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" id="date" name="date" class="form-control" placeholder="Start date - End date">
+                                <div class="form-control-icon">
+                                    <i class="bi bi-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group position-relative has-icon-right">
+                                <input type="text" id="q" name="q" class="form-control" placeholder="Search title..">
+                                <div class="form-control-icon">
+                                    <i class="fa fa-times btn-clear-search"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" col-md-2 col-sm-12 col-xs-12">
+                            <button type="submit" class="btn btn-primary btn-block" id="search-btn">Search</button>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                </form>
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive">

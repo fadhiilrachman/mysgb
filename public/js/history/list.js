@@ -9,8 +9,8 @@ let __table = $('table.table-list').DataTable({
                 return (meta.row+1)+(__table.page.info().page*__table.page.info().length);
             }
         },
-        {data: 'title_with_link', name: 'title_with_link'},
-        {data: 'user_id', name: 'user_id'},
+        {data: 'type', name: 'type'},
+        {data: 'ip', name: 'ip'},
         {data: 'created_at', name: 'created_at', orderable: false, searchable: false}
     ]
 });

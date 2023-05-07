@@ -8,6 +8,15 @@ let __startDate = moment().subtract(7, 'd'),
 $('input[name=start_date]').val(__startDate.format('YYYY-MM-DD'));
 $('input[name=end_date]').val(__endDate.format('YYYY-MM-DD'));
 
+$('input[name="date"]').daterangepicker({
+    startDate: __startDate,
+    endDate: __endDate,
+    opens: 'left'
+}, function(start, end, label) {
+    $('input[name=start_date]').val(start.format('YYYY-MM-DD'));
+    $('input[name=end_date]').val(end.format('YYYY-MM-DD'));
+});
+
 let __table = $('table.table-list').DataTable({
     searching: false,
     processing: true,

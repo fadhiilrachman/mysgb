@@ -24,7 +24,7 @@ class LogActivityEventListener
      */
     public function handle(LogActivityEventInterface $event)
     {
-        if(!in_array($event->getType(), $this->exclude())) {
+        if (!in_array($event->getType(), $this->exclude())) {
             $user = Auth::user();
             if (!empty($user)) {
                 $createdBy = $user->id;

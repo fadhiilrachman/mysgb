@@ -33,7 +33,7 @@
                                         <th>No</th>
                                         <th>Activity Name</th>
                                         <th>IP Address</th>
-                                        <th>Time</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>

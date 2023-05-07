@@ -24,6 +24,9 @@
 @endif
 
 @if(Route::is('sharing.my-list') )
+    <script src="{{ asset('/vendors/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('/vendors/daterangepicker/daterangepicker.min.js') }}"></script>
+
     <script src="{{ asset('/vendors/DataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('/js/sharing/my-list.js') }}"></script>
 @endif

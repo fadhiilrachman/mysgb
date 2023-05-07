@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Links;
+namespace App\Events\Sharing;
 
 use App\Events\Event;
 use App\Interfaces\LogActivityEventInterface;
@@ -13,10 +13,14 @@ class ViewSharingContentSucceededEvent extends Event implements LogActivityEvent
     /** @var int */
     private $statusCode;
 
-    public function __construct(array $data, int $statusCode = 200)
+    /** @var string */
+    private $ip;
+
+    public function __construct(array $data, int $statusCode = 200, string $ip = '127.0.0.1')
     {
         $this->data = $data;
         $this->statusCode = $statusCode;
+        $this->ip = $ip;
     }
 
     public function getType(): string
@@ -26,7 +30,7 @@ class ViewSharingContentSucceededEvent extends Event implements LogActivityEvent
 
     public function getIP(): string
     {
-        return '127.0.0.1';
+        return $this->ip;
     }
 
     public function getStatus(): int

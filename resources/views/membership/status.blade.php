@@ -24,10 +24,14 @@
                 <h4 class="card-title">Status</h4>
             </div>
             <div class="card-body">
+                <div class="alert alert-info">
+                    We are still developing this feature, stay tuned!
+                </div>
                 Current status:
                 {{-- <span class="badge bg-light-primary">Level 1</span> --}}
-                <span class="badge bg-light-secondary">Not a SGB TEAM Member</span>
-                <span class="badge bg-light-success">Verified Email</span>
+                <span class="badge bg-light-secondary">Unverified SGB Member</span>
+                <span class="badge bg-light-secondary">Unverified Email</span>
+                {{-- <span class="badge bg-light-success">Verified Email</span> --}}
             </div>
         </div>
     </section>

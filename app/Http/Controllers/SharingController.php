@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Sharing\CreateSharingContentFailedEvent;
+use App\Events\Sharing\CreateSharingContentSucceededEvent;
 use App\Models\Sharing;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class SharingController extends Controller
 {
-    public function detail($id)
+    public function detail($id, Request $request)
     {
         if (!Uuid::isValid($id)) {
             abort(404);
@@ -23,9 +24,37 @@ class SharingController extends Controller
             abort(404);
         }
 
-        $data = Sharing::where('sharing_id', $id)->first();
+        $data = Sharing::where('sharing_id', $id)
+            ->where('view_mode', '!=', 'private')
+            ->first();
+        
+        if ($data->view_mode == 'secret') {
+            $lockStatus = true;
 
-        return view('sharing.detail', compact('data'));
+            if ($request->isMethod('post')) {
+                $validator = Validator::make($request->all(), [
+                    'secret_code' => 'required|string|min:1'
+                ]);
+        
+                if ($validator->fails()) {
+                    return redirect()->back()
+                        ->withErrors($validator->errors()->first());
+                }
+
+                $secretCode = $request->input('secret_code');
+
+                if ($data->secret_code === preg_replace('/\s+/', '', $secretCode)) {
+                    $lockStatus = false;
+                } else {
+                    return redirect()->back()
+                        ->withErrors('Wrong secret code');
+                }
+            }
+        } else {
+            $lockStatus = false;
+        }
+
+        return view('sharing.detail', compact('lockStatus', 'id', 'data'));
     }
 
     public function list()
@@ -57,14 +86,14 @@ class SharingController extends Controller
         $endDate = $request->get('end_date');
 
         $sharing = Sharing::select('sharing_id', 'title', 'user_id', 'created_at')
+            ->where('listing_mode', true)
             ->whereBetween('created_at', [$startDate.' 00:00:00', $endDate.' 23:59:59']);
 
         if ($request->filled('q')) {
             $searchQuery = $request->get('q');
 
             $sharing->where(function ($query) use ($searchQuery) {
-                $query->where('title', 'ILIKE', "%{$searchQuery}%")
-                    ->orWhere('created_by', 'ILIKE', "%{$searchQuery}%");
+                $query->where('title', 'ILIKE', "%{$searchQuery}%");
             });
         }
 
@@ -123,8 +152,7 @@ class SharingController extends Controller
             $searchQuery = $request->get('q');
 
             $sharing->where(function ($query) use ($searchQuery) {
-                $query->where('title', 'ILIKE', "%{$searchQuery}%")
-                    ->orWhere('created_by', 'ILIKE', "%{$searchQuery}%");
+                $query->where('title', 'ILIKE', "%{$searchQuery}%");
             });
         }
 
@@ -160,28 +188,48 @@ class SharingController extends Controller
             'expired_at' => 'datetime',
         ]);
         if ($validator->fails()) {
+            event(new CreateSharingContentFailedEvent([
+                'requests' => $request->all()
+            ], 'Error validation', 400, $request->ip()));
+
             return redirect()->route('sharing.create-new')
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $uuid = Str::uuid()->toString();
-        $sharing = new Sharing([
-            'sharing_id' => $uuid,
-            'user_id' => Auth::id(),
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'body' => $request->input('body'),
-            'labels' => json_encode($request->input('labels')),
-            'view_mode' => $request->input('view_mode'),
-            'listing_mode' => $request->input('listing_mode')=='yes'?true:($request->input('listing_mode')=='no'?false:true),
-            'secret_code' => $request->input('secret_code') ?? null,
-            'expired_at' => $request->input('expired_at') ?? null
-        ]);
-        $sharing->save();
+        try {
+            $uuid = Str::uuid()->toString();
+            $data = [
+                'sharing_id' => $uuid,
+                'user_id' => Auth::id(),
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'body' => $request->input('body'),
+                'labels' => json_encode($request->input('labels')),
+                'view_mode' => $request->input('view_mode'),
+                'listing_mode' => $request->input('listing_mode')=='yes'?true:($request->input('listing_mode')=='no'?false:true),
+                'secret_code' => $request->input('secret_code') ?? null,
+                'expired_at' => $request->input('expired_at') ?? null
+            ];
+            $sharing = new Sharing($data);
+            $sharing->save();
 
-        return redirect()->route('sharing.detail', $sharing->sharing_id)
-            ->with('success', 'Your new sharing content is published!');
+            event(new CreateSharingContentSucceededEvent([
+                'requests' => $request->all(),
+                'store'    => $data
+            ], 200, $request->ip()));
+
+            return redirect()->route('sharing.detail', $sharing->sharing_id)
+                ->with('success', 'Your new sharing content is published!');
+        } catch (\Throwable $e) {
+            event(new CreateSharingContentFailedEvent([
+                'requests' => $request->all()
+            ], $e->getMessage(), 500, $request->ip()));
+
+            return redirect()->route('sharing.create-new')
+                ->withErrors($e->getMessage())
+                ->withInput();
+        }
     }
 
     public function edit()
@@ -191,6 +239,6 @@ class SharingController extends Controller
 
     public function update(Request $request)
     {
-
+        // to-do
     }
 }

@@ -13,15 +13,24 @@ class LoginSucceededEvent extends Event implements LogActivityEventInterface
     /** @var int */
     private $statusCode;
 
-    public function __construct(array $data, int $statusCode = 200)
+    /** @var string */
+    private $ip;
+
+    public function __construct(array $data, int $statusCode = 200, string $ip = '127.0.0.1')
     {
         $this->data = $data;
         $this->statusCode = $statusCode;
+        $this->ip = $ip;
     }
 
     public function getType(): string
     {
         return 'LoginSucceeded';
+    }
+
+    public function getIP(): string
+    {
+        return $this->ip;
     }
 
     public function getStatus(): int
