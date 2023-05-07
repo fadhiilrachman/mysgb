@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Events\Sharing\CreateSharingContentFailedEvent;
 use App\Events\Sharing\CreateSharingContentSucceededEvent;
+use App\Events\Sharing\ViewSharingContentFailedEvent;
+use App\Events\Sharing\ViewSharingContentSucceededEvent;
 use App\Models\Sharing;
+use App\Models\Viewers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +40,10 @@ class SharingController extends Controller
                 ]);
         
                 if ($validator->fails()) {
+                    event(new ViewSharingContentFailedEvent([
+                        'requests' => $request->all()
+                    ], 'Error validation', 400, $request->ip()));
+                    
                     return redirect()->back()
                         ->withErrors($validator->errors()->first());
                 }
@@ -45,13 +52,28 @@ class SharingController extends Controller
 
                 if ($data->secret_code === preg_replace('/\s+/', '', $secretCode)) {
                     $lockStatus = false;
+
+                    event(new ViewSharingContentSucceededEvent([
+                        'requests' => $request->all()
+                    ], 200, $request->ip()));
+
+                    (new Viewers())->watch($data->id, $request->server('HTTP_REFERER'), $request->ip());
                 } else {
+                    event(new ViewSharingContentFailedEvent([
+                        'requests' => $request->all()
+                    ], 'Wrong secret code', 400, $request->ip()));
+
                     return redirect()->back()
                         ->withErrors('Wrong secret code');
                 }
             }
         } else {
             $lockStatus = false;
+
+            event(new ViewSharingContentSucceededEvent([
+                'requests' => $request->all()
+            ], 200, $request->ip()));
+            (new Viewers())->watch($data->id, $request->server('HTTP_REFERER'), $request->ip());
         }
 
         return view('sharing.detail', compact('lockStatus', 'id', 'data'));
