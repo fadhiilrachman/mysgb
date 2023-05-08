@@ -22,6 +22,11 @@
     <link rel="stylesheet" href="{{ asset('/vendors/DataTables/datatables.min.css') }}">
 @endif
 
+@if(Route::is('shield.list') )
+    <link rel="stylesheet" href="{{ asset('/vendors/DataTables/datatables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('/vendors/daterangepicker/daterangepicker.min.css') }}" />
+@endif
+
 <link rel="stylesheet" href="{{ mix('css/bootstrap.css') }}">
 <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">

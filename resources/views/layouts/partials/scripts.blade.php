@@ -36,4 +36,12 @@
     <script src="{{ asset('/js/history/list.js') }}"></script>
 @endif
 
+@if(Route::is('shield.list') )
+    <script src="{{ asset('/vendors/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('/vendors/daterangepicker/daterangepicker.min.js') }}"></script>
+
+    <script src="{{ asset('/vendors/DataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('/js/shield/list.js') }}"></script>
+@endif
+
 {{ $script ?? ''}}

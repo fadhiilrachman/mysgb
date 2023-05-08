@@ -6,6 +6,7 @@ use App\Events\Sharing\CreateSharingContentFailedEvent;
 use App\Events\Sharing\CreateSharingContentSucceededEvent;
 use App\Events\Sharing\ViewSharingContentSucceededEvent;
 use App\Events\Sharing\ViewSharingContentFailedEvent;
+use App\Events\Shield\BuildClientShieldFailedEvent;
 use App\Listeners\LogActivityEventListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -34,6 +35,14 @@ class EventServiceProvider extends ServiceProvider
             LogActivityEventListener::class
         ],
         CreateSharingContentFailedEvent::class => [
+            LogActivityEventListener::class
+        ],
+
+        // Shield
+        BuildClientShieldSucceededEvent::class => [
+            LogActivityEventListener::class
+        ],
+        BuildClientShieldFailedEvent::class => [
             LogActivityEventListener::class
         ],
     ];

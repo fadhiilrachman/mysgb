@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\DevicesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\ShieldController;
 use App\Http\Controllers\SharingController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +27,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
         return view('dashboard');
     })->name('dashboard');
 
+    // Membership
     Route::get('/membership/status', [MembershipController::class, 'status'])->name('membership.status');
 
     // Sharing
@@ -39,6 +42,17 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
 
     Route::get('/sharing/{id}', [SharingController::class, 'detail'])->name('sharing.detail');
     Route::post('/sharing/{id}', [SharingController::class, 'detail'])->name('sharing.detail');
+
+    // Shield
+    Route::get('/shield', [ShieldController::class, 'list'])->name('shield.list');
+    Route::get('/shield/list.json', [ShieldController::class, 'listAjax'])->name('shield.list-ajax');
+
+    Route::get('/shield/build-new', [ShieldController::class, 'build'])->name('shield.build-new');
+    Route::post('/shield/build-new', [ShieldController::class, 'store'])->name('shield.build-new');
+    Route::get('/shield/{id}', [ShieldController::class, 'detail'])->name('shield.detail');
+
+    // Devices
+    Route::get('/devices', [DevicesController::class, 'list'])->name('devices.list');
 
     Route::get('/history', [HistoryController::class, 'view'])->name('history.view');
     Route::get('/history/list.json', [HistoryController::class, 'listAjax'])->name('history.list-ajax');

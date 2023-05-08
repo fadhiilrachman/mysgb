@@ -29,25 +29,26 @@ class Viewers extends Model
                 'sharing_id' => $sharingId,
                 'user_id'    => $userId
             ]);
-        if ($isAlreadyWatch->exists() == true) {
+        
+        if ($isAlreadyWatch->exists()) {
             $viewCount = $isAlreadyWatch->first()->view_count + 1;
 
-            $sharing = Viewers::find($isAlreadyWatch->first()->id);
-            $sharing->view_count = $viewCount;
-            $sharing->referer = $referer;
-            $sharing->ip = $ip;
-            $sharing->save();
+            $views = Viewers::find($isAlreadyWatch->first()->id);
+            $views->view_count = $viewCount;
+            $views->referer = $referer;
+            $views->ip = $ip;
+            $views->save();
         } else {
             $viewCount = 1;
 
-            $sharing = new Viewers([
+            $views = new Viewers([
                 'sharing_id' => $sharingId,
                 'view_count' => $viewCount,
                 'user_id'    => $userId,
                 'referer'    => $referer,
                 'ip'         => $ip
             ]);
-            $sharing->save();
+            $views->save();
         }
     }
 }
