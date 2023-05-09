@@ -5,6 +5,8 @@ The place for sharing needs.
 
 - PHP 8.1.9
 - Postgresql 15.2
+- Docker
+- NPM
 
 ## Installation
 1. Clone this project
