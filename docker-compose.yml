@@ -1,0 +1,62 @@
+version: "3.9"
+services:
+  app:
+    image: "sgb-app"
+    container_name: "mysgb-app"
+    profiles: ["app"]
+    restart: unless-stopped
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./.docker/php/Dockerfile
+    volumes:
+      - ./:/var/www
+      - mysgb-tmp-app-vol:/var/www/storage/logs
+    networks:
+      - mysgb-network
+
+  nginx:
+    image: "sgb-nginx"
+    container_name: "mysgb-nginx"
+    profiles: ["app"]
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: ./.docker/nginx/Dockerfile
+    volumes:
+      - ./:/var/www
+      - mysgb-tmp-nginx-vol:/var/log/nginx
+    depends_on:
+      - app
+    ports:
+      - "${FORWARD_HTTP_PORT:-8080}:8080"
+    networks:
+      - mysgb-network
+
+  db:
+    image: "bitnami/postgresql:14.5.0"
+    container_name: "mysgb-db"
+    profiles: ["db"]
+    restart: unless-stopped
+    networks:
+      - mysgb-network
+    env_file:
+      - ./.docker/db/.env
+    ports:
+      - "${FORWARD_POSTGRES_PORT:-5436}:5432"
+    volumes:
+      - /opt/docker/db_mysgb:/bitnami/postgresql
+
+networks:
+  mysgb-network:
+    driver: bridge
+
+volumes:
+  mysgb-tmp-nginx-vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  mysgb-tmp-app-vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

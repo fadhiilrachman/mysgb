@@ -60,8 +60,7 @@ class ShieldController extends Controller
                 return '<a href="'.route('shield.detail', ['id'=>$row->client_id]).'">'.$row->client_name.'</a>';
             })
             ->editColumn('created_at', function ($row) {
-                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at, 'UTC')
-                    ->setTimezone('Asia/Jakarta');
+                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at);
 
                 return $date->diffForHumans();
             })

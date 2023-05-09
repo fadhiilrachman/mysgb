@@ -39,8 +39,7 @@ class HistoryController extends Controller
 
         return DataTables::of($logs)
             ->editColumn('created_at', function ($row) {
-                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at, 'UTC')
-                    ->setTimezone('Asia/Jakarta');
+                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at);
 
                 return $date->diffForHumans();
             })

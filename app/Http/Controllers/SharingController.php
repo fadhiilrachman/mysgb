@@ -129,8 +129,7 @@ class SharingController extends Controller
                 return $author->name;
             })
             ->editColumn('created_at', function ($row) {
-                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at, 'UTC')
-                    ->setTimezone('Asia/Jakarta');
+                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at);
 
                 return $date->diffForHumans();
             })
@@ -183,8 +182,7 @@ class SharingController extends Controller
                 return '<a href="'.route('sharing.detail', ['id'=>$row->sharing_id]).'">'.$row->title.'</a>';
             })
             ->editColumn('created_at', function ($row) {
-                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at, 'UTC')
-                    ->setTimezone('Asia/Jakarta');
+                $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at);
 
                 return $date->diffForHumans();
             })
