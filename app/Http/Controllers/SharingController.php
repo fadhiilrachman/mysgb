@@ -6,7 +6,7 @@ use App\Events\Sharing\CreateSharingContentFailedEvent;
 use App\Events\Sharing\CreateSharingContentSucceededEvent;
 use App\Events\Sharing\ViewSharingContentFailedEvent;
 use App\Events\Sharing\ViewSharingContentSucceededEvent;
-use App\Models\Sharing;
+use App\Models\Contents;
 use App\Models\Viewers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,11 +23,11 @@ class SharingController extends Controller
         if (!Uuid::isValid($id)) {
             abort(404);
         }
-        if (!Sharing::where('sharing_id', $id)->exists()) {
+        if (!Contents::where('content_id', $id)->exists()) {
             abort(404);
         }
 
-        $data = Sharing::where('sharing_id', $id)
+        $data = Contents::where('content_id', $id)
             ->where('view_mode', '!=', 'private')
             ->first();
         
@@ -107,21 +107,21 @@ class SharingController extends Controller
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
 
-        $sharing = Sharing::select('sharing_id', 'title', 'user_id', 'created_at')
+        $contents = Contents::select('content_id', 'title', 'user_id', 'created_at')
             ->where('listing_mode', true)
             ->whereBetween('created_at', [$startDate.' 00:00:00', $endDate.' 23:59:59']);
 
         if ($request->filled('q')) {
             $searchQuery = $request->get('q');
 
-            $sharing->where(function ($query) use ($searchQuery) {
+            $contents->where(function ($query) use ($searchQuery) {
                 $query->where('title', 'ILIKE', "%{$searchQuery}%");
             });
         }
 
-        return DataTables::of($sharing)
+        return DataTables::of($contents)
             ->addColumn('title_with_link', function ($row) {
-                return '<a href="'.route('sharing.detail', ['id'=>$row->sharing_id]).'">'.$row->title.'</a>';
+                return '<a href="'.route('sharing.detail', ['id'=>$row->content_id]).'">'.$row->title.'</a>';
             })
             ->editColumn('user_id', function ($row) {
                 $author = $row->author;
@@ -165,21 +165,21 @@ class SharingController extends Controller
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
 
-        $sharing = Sharing::select('sharing_id', 'title', 'created_at')
+        $contents = Contents::select('content_id', 'title', 'created_at')
             ->where('user_id', Auth::id())
             ->whereBetween('created_at', [$startDate.' 00:00:00', $endDate.' 23:59:59']);
 
         if ($request->filled('q')) {
             $searchQuery = $request->get('q');
 
-            $sharing->where(function ($query) use ($searchQuery) {
+            $contents->where(function ($query) use ($searchQuery) {
                 $query->where('title', 'ILIKE', "%{$searchQuery}%");
             });
         }
 
-        return DataTables::of($sharing)
+        return DataTables::of($contents)
             ->addColumn('title_with_link', function ($row) {
-                return '<a href="'.route('sharing.detail', ['id'=>$row->sharing_id]).'">'.$row->title.'</a>';
+                return '<a href="'.route('sharing.detail', ['id'=>$row->content_id]).'">'.$row->title.'</a>';
             })
             ->editColumn('created_at', function ($row) {
                 $date = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at);
@@ -220,7 +220,7 @@ class SharingController extends Controller
         try {
             $uuid = Str::uuid()->toString();
             $data = [
-                'sharing_id' => $uuid,
+                'content_id' => $uuid,
                 'user_id' => Auth::id(),
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
@@ -231,15 +231,15 @@ class SharingController extends Controller
                 'secret_code' => $request->input('secret_code') ?? null,
                 'expired_at' => $request->input('expired_at') ?? null
             ];
-            $sharing = new Sharing($data);
-            $sharing->save();
+            $contents = new Contents($data);
+            $contents->save();
 
             event(new CreateSharingContentSucceededEvent([
                 'requests' => $request->all(),
                 'store'    => $data
             ], 200, $request->ip()));
 
-            return redirect()->route('sharing.detail', $sharing->sharing_id)
+            return redirect()->route('sharing.detail', $contents->content_id)
                 ->with('success', 'Your new sharing content is published!');
         } catch (\Throwable $e) {
             event(new CreateSharingContentFailedEvent([

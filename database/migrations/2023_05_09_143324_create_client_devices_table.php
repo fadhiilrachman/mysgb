@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('viewers', function (Blueprint $table) {
+        Schema::create('client_devices', function (Blueprint $table) {
             $table->id();
-            $table->integer('content_id');
-            $table->integer('view_count')->default(1);
-            $table->integer('user_id')->nullable();
-            $table->string('referer')->nullable();
-            $table->string('ip')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('viewers');
+        Schema::dropIfExists('client_devices');
     }
 };

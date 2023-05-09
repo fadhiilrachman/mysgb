@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sharing', function (Blueprint $table) {
+        Schema::create('contents', function (Blueprint $table) {
             $table->id();
-            $table->uuid('sharing_id');
+            $table->uuid('content_id');
             $table->integer('user_id');
             $table->string('title');
             $table->text('description');
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sharing');
+        Schema::dropIfExists('contents');
     }
 };

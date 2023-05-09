@@ -22,38 +22,52 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'home'])
     ->name('home');
 
-Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+
+    // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
     // Membership
-    Route::get('/membership/status', [MembershipController::class, 'status'])->name('membership.status');
+    Route::prefix('membership')->name('membership.')->group(function () {
+        Route::get('status', [MembershipController::class, 'status'])->name('status');
+    });
 
     // Sharing
-    Route::get('/sharing', [SharingController::class, 'list'])->name('sharing.list');
-    Route::get('/sharing/list.json', [SharingController::class, 'listAjax'])->name('sharing.list-ajax');
+    Route::prefix('sharing')->name('sharing.')->group(function () {
+        Route::get('/', [SharingController::class, 'list'])->name('list');
+        Route::get('list.json', [SharingController::class, 'listAjax'])->name('list-ajax');
 
-    Route::get('/sharing/my-list', [SharingController::class, 'myList'])->name('sharing.my-list');
-    Route::get('/sharing/my-list.json', [SharingController::class, 'myListAjax'])->name('sharing.my-list-ajax');
+        Route::get('my-list', [SharingController::class, 'myList'])->name('my-list');
+        Route::get('my-list.json', [SharingController::class, 'myListAjax'])->name('my-list-ajax');
 
-    Route::get('/sharing/create-new', [SharingController::class, 'create'])->name('sharing.create-new');
-    Route::post('/sharing/create-new', [SharingController::class, 'store'])->name('sharing.store');
+        Route::get('create-new', [SharingController::class, 'create'])->name('create-new');
+        Route::post('create-new', [SharingController::class, 'store'])->name('store');
 
-    Route::get('/sharing/{id}', [SharingController::class, 'detail'])->name('sharing.detail');
-    Route::post('/sharing/{id}', [SharingController::class, 'detail'])->name('sharing.detail');
+        Route::get('{id}', [SharingController::class, 'detail'])->name('detail');
+        Route::post('{id}', [SharingController::class, 'detail'])->name('detail');
+    });
 
     // Shield
-    Route::get('/shield', [ShieldController::class, 'list'])->name('shield.list');
-    Route::get('/shield/list.json', [ShieldController::class, 'listAjax'])->name('shield.list-ajax');
+    Route::prefix('shield')->name('shield.')->group(function () {
+        Route::get('/', [ShieldController::class, 'list'])->name('list');
+        Route::get('list.json', [ShieldController::class, 'listAjax'])->name('list-ajax');
 
-    Route::get('/shield/build-new', [ShieldController::class, 'build'])->name('shield.build-new');
-    Route::post('/shield/build-new', [ShieldController::class, 'store'])->name('shield.build-new');
-    Route::get('/shield/{id}', [ShieldController::class, 'detail'])->name('shield.detail');
+        Route::get('build-new', [ShieldController::class, 'build'])->name('build-new');
+        Route::post('build-new', [ShieldController::class, 'store'])->name('build-new');
+        
+        Route::get('{id}', [ShieldController::class, 'detail'])->name('detail');
+    });
 
     // Devices
-    Route::get('/devices', [DevicesController::class, 'list'])->name('devices.list');
+    Route::prefix('devices')->name('devices.')->group(function () {
+        Route::get('/', [DevicesController::class, 'list'])->name('list');
+    });
 
-    Route::get('/history', [HistoryController::class, 'view'])->name('history.view');
-    Route::get('/history/list.json', [HistoryController::class, 'listAjax'])->name('history.list-ajax');
+    // History
+    Route::prefix('history')->name('history.')->group(function () {
+        Route::get('/', [HistoryController::class, 'view'])->name('view');
+        Route::get('list.json', [HistoryController::class, 'listAjax'])->name('list-ajax');
+    });
 });

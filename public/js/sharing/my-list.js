@@ -26,7 +26,7 @@ let __table = $('table.table-list').DataTable({
         end_date: $('input[name=end_date]').val()
     }),
     columns: [
-        {data: 'sharing_id', searchable: false, 
+        {data: 'content_id', searchable: false, 
             render: function (data, type, full, meta) {
                 return (meta.row+1)+(__table.page.info().page*__table.page.info().length);
             }

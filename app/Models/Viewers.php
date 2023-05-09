@@ -10,7 +10,7 @@ class Viewers extends Model
     protected $table = 'viewers';
 
     protected $fillable = [
-        'sharing_id',
+        'content_id',
         'view_count',
         'user_id',
         'referer',
@@ -22,11 +22,11 @@ class Viewers extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function watch($sharingId, $referer='', $ip='127.0.0.1')
+    public function watch($contentId, $referer='', $ip='127.0.0.1')
     {
         $userId = Auth::id();
         $isAlreadyWatch = Viewers::where([
-                'sharing_id' => $sharingId,
+                'content_id' => $contentId,
                 'user_id'    => $userId
             ]);
         
@@ -42,7 +42,7 @@ class Viewers extends Model
             $viewCount = 1;
 
             $views = new Viewers([
-                'sharing_id' => $sharingId,
+                'content_id' => $contentId,
                 'view_count' => $viewCount,
                 'user_id'    => $userId,
                 'referer'    => $referer,

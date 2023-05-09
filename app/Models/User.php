@@ -55,9 +55,9 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function sharing()
+    public function contents()
     {
-        return $this->hasMany(Sharing::class, 'user_id');
+        return $this->hasMany(Contents::class, 'user_id');
     }
 
     public function view()

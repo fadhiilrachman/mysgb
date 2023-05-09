@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Sharing extends Model
+class Contents extends Model
 {
-    protected $table = 'sharing';
+    protected $table = 'contents';
 
     protected $fillable = [
-        'sharing_id',
+        'content_id',
         'user_id',
         'title',
         'description',
@@ -30,7 +30,7 @@ class Sharing extends Model
     public function getViewersAttribute()
     {
         return Viewers::select('user_id', 'referer', 'ip', 'updated_at')
-            ->where('sharing_id', $this->id)
+            ->where('content_id', $this->id)
             ->get();
     }
 
