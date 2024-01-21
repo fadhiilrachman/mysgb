@@ -1,4 +1,4 @@
-FROM php:8.2.14-fpm-bullseye
+FROM php:8.2.14-cli
 
 RUN apt-get update && apt-get install -y \
     libpq-dev libicu-dev libonig-dev \
@@ -18,9 +18,16 @@ RUN apt-get update && apt-get install -y \
     && pecl -v install redis && docker-php-ext-enable redis
 
 RUN docker-php-ext-install mbstring gd
+
 RUN addgroup --gid 1001 nobody
 
 COPY ./.docker/php/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY --chown=nobody:nobody ./ /var/www
 
 WORKDIR /var/www
 USER nobody
+
+COPY --chown=nobody:nobody ./.docker/worker/entrypoint.sh /opt/bin/entrypoint.sh
+RUN chmod +x /opt/bin/entrypoint.sh
+
+CMD ["/opt/bin/entrypoint.sh"]

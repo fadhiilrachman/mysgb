@@ -3,6 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/.docker/db_mysgb
 .env
 .env.backup
 .phpunit.result.cache

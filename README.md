@@ -20,7 +20,7 @@ The place for sharing needs.
     ```
     And javascript dependencies
     ```bash
-    yarn install && yarn dev
+    npm install && npm dev
     ```
 
 3. Set up Laravel configurations

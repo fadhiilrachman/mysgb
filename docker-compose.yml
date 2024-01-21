@@ -33,6 +33,21 @@ services:
     networks:
       - mysgb-network
 
+  worker:
+    image: "sgb-worker"
+    container_name: "mysgb-worker"
+    profiles: ["app"]
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: ./.docker/worker/Dockerfile
+    depends_on:
+      - app
+    volumes:
+      - mysgb-tmp-app-vol:/var/www/storage/logs
+    networks:
+      - mysgb-network
+
   db:
     image: "bitnami/postgresql:14.5.0"
     container_name: "mysgb-db"
@@ -45,7 +60,7 @@ services:
     ports:
       - "${FORWARD_POSTGRES_PORT:-5436}:5432"
     volumes:
-      - /opt/docker/db_mysgb:/bitnami/postgresql
+      - ./.docker/db_mysgb:/bitnami/postgresql
 
 networks:
   mysgb-network:
